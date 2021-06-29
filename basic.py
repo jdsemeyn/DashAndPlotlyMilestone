@@ -22,6 +22,12 @@ app.layout = html.Div([
                                         start_date=datetime(2020,1,1),
                                         end_date=datetime.today()
                     )],style={'display':'inline-block'}),
+            html.Div([
+                    html.Button(id='submit-button',
+                                n_clicks=0,
+                                children='Submit',
+                                style={'fontSize':24,'marginLeft':'30px'})
+            ],style={'display':'inline-block'}),
 
             dcc.Graph(id='my_graph',
                     figure={'data':[
@@ -32,11 +38,12 @@ app.layout = html.Div([
             ])
 
 @app.callback(Output('my_graph','figure'),
-            [Input('my_stock_picker','value'),
-            Input('my_date_picker','start_date'),
-            Input('my_date_picker','end_date')
+            [Input('submit-button','n_clicks')],
+            [State('my_stock_picker','value'),
+            State('my_date_picker','start_date'),
+            State('my_date_picker','end_date')
             ])
-def update_graph(stock_ticker,start_date,end_date):
+def update_graph(n_clicks,stock_ticker,start_date,end_date):
     start = datetime.strptime(start_date[:10],'%Y-%m-%d')
     end = datetime.strptime(end_date[:10],'%Y-%m-%d')
     df = web.DataReader(stock_ticker,'stooq',start,end)
